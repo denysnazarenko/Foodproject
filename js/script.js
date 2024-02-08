@@ -198,9 +198,16 @@ window.addEventListener('DOMContentLoaded', () => {
     return await res.json();
   };
 
-  getResource('http://localhost:3000/menu')
+  // getResource('http://localhost:3000/menu')
+  //   .then(data => {
+      // data.forEach(({img, altimg, title, descr, price}) => {
+      //   new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+      // });
+  //   });
+
+  axios.get('http://localhost:3000/menu')
     .then(data => {
-      data.forEach(({img, altimg, title, descr, price}) => {
+      data.data.forEach(({ img, altimg, title, descr, price }) => {
         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
       });
     });
@@ -210,7 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
   //   .then(data => createCard(data));
 
   // function createCard(data) {
-  //   data.forEach(({ img, altimg, title, descr, price }) => {
+  //   data.forEach(({img, altimg, title, descr, price}) => {
   //     const element = document.createElement('div');
 
   //     price = price * 27;
@@ -309,5 +316,107 @@ window.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }, 4000);
   }
+
+  // Slider
+  const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current');
+  let slideIndex = 1;
+
+  showSlides(slideIndex);
+
+  if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+  } else {
+    total.textContent = slides.length;
+  }
+
+  function showSlides(n) {
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+
+    slides.forEach(item => item.style.display = 'none');
+
+    slides[slideIndex - 1].style.display = 'block';
+
+    if (slides.length < 10) { // при умові slides.length < 10 трішки ломається, потрібно робити slideIndex < 10
+      current.textContent = `0${slideIndex}`;
+    } else {
+      current.textContent = slideIndex;
+    }
+  }
+
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  prev.addEventListener('click', () => {
+    plusSlides(-1);
+  });
+
+  next.addEventListener('click', () => {
+    plusSlides(1);
+  });
+  
+
+
+  // зробив сам
+  // const sliderArrowParents = document.querySelector('.offer__slider-counter'),
+  //       sliderContent = document.querySelectorAll('.offer__slide'),
+  //       sliderCurrent = sliderArrowParents.querySelector('#current'),
+  //       sliderTotal = sliderArrowParents.querySelector('#total');
+  
+  // function hideSliderContent() {
+  //   sliderContent.forEach(slide => {
+  //     slide.classList.add('hide');
+  //     slide.classList.remove('show', 'fade');
+  //   });
+  // }
+
+  // function showSliderContent(i = 0) {
+  //   sliderContent[i].classList.add('show', 'fade');
+  //   sliderContent[i].classList.remove('hide');
+  //   sliderCurrent.textContent = `${getZero(i + 1)}`;
+  //   sliderTotal.textContent = `${getZero(sliderContent.length)}`;
+  // }
+
+  // hideSliderContent();
+  // showSliderContent();
+
+  // sliderArrowParents.addEventListener('click', (e) => {
+  //   e.preventDefault();
+  //   const target = e.target;
+  //   let iteration;
+  //   sliderContent.forEach((slide, i) => {
+  //     if (slide.classList.contains('show')) {
+  //       return iteration = i;
+  //     }
+  //   });
+    
+  //   if (target && target.classList.contains('offer__slider-next')) {
+  //     if (iteration === sliderContent.length - 1) {
+  //       iteration = 0;
+  //     } else {
+  //       iteration++;
+  //     }
+  //     hideSliderContent();
+  //     showSliderContent(iteration);
+  //   } else if (target && target.classList.contains('offer__slider-prev')) {
+  //     if (iteration === 0) {
+  //       iteration = sliderContent.length - 1;
+  //     } else {
+  //       iteration--;
+  //     }
+  //     hideSliderContent();
+  //     showSliderContent(iteration);
+  //   }
+  // });
 
 });
